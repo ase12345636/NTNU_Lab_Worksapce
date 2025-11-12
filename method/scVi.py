@@ -1,4 +1,6 @@
+import os
 import scvi
+import numpy as np
 from utils.plot import plot
 
 def scVi(adata, out_path, batch, celltype):
@@ -12,8 +14,10 @@ def scVi(adata, out_path, batch, celltype):
     model.train()
     adata.obsm["X_scVI"] = model.get_latent_representation()
 
-    # standardize embedding key for metrics
     adata.obsm['X_emb'] = adata.obsm['X_scVI']
+
+    os.makedirs(os.path.dirname(out_path), exist_ok=True)
+    np.save(f"{out_path}_emb.npy", adata.obsm['X_emb'])
 
     plot(adata, "X_scVI", batch , celltype, out_path)
     return adata
